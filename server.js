@@ -44,3 +44,4 @@ app.get('/api/*', function (req, res) {
 
 httpsServer.listen(9998);
 httpServer.listen(9999);
+console.log('listen https 9998, listen http 9999')
