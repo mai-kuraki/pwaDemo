@@ -1,0 +1,66 @@
+*{
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+}
+html, body{
+  width: 100%;
+  height: 100%;
+}
+body{
+  padding-top: 50px;
+}
+.toolbar{
+  width: 100%;
+  height: 50px;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  display: flex;
+  background: rgb(24, 144, 255);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  color: #FFF;
+}
+.toolbar .action{
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.toolbar .action img{
+  display: block;
+  width: 20px;
+}
+.toolbar .title{
+  flex: 1;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.toolbar .menu {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.provice_list, .city_list{
+  width: 100%;
+  height: calc(100% - 50px);
+  overflow-y: auto;
+}
+.provice_list .item, .city_list .item {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  padding: 0px 20px;
+  align-items: center;
+  font-size: 14px;
+  border-bottom: solid 1px #EEE;
+}
+.provice_list .item:last-child, .city_list .item:last-child{
+  border-bottom: none;
+}

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello PWA</title>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="/main.css">
+    <link rel="manifest" href="/manifest.json">
+    <script src="/jquery.js"></script>
+</head>
+<body>
+<div class="toolbar">
+    <div class="action"><img src="/back.png" style="display: none;"></div>
+    <div class="title">天气查询</div>
+    <div class="menu"></div>
+</div>
+<div class="provice_list"></div>
+<div class="city_list" style="display: none"></div>
+</body>
+<script>
+  // 检测浏览器是否支持SW
+  if (navigator.serviceWorker != null) {
+    navigator.serviceWorker.register('/sw.js')
+      .then(function (registartion) {
+        registartion.update();
+      })
+  }
+
+  function getProviceList() {
+    $.get('/api/historyWeather/province').then(function (data, error) {
+      if (data.error_code === 0) {
+        let item = data.result || [];
+        var html = '';
+        item.forEach(function (rec) {
+          html += '<div class="item" data-id="' + rec.id + '">' + rec.province + '</div>';
+        });
+        $('.provice_list').html(html);
+      }
+    })
+  }
+
+  function getCityList(id) {
+    $.get('/api/historyWeather/citys?province_id=' + id).then(function (data, error) {
+      if (data.error_code === 0) {
+        let item = data.result || [];
+        var html = '';
+        item.forEach(function (rec) {
+          html += '<div class="item" data-id="' + rec.id + '" data-pid="'+ rec.province_id +'">' + rec.city_name + '</div>';
+        });
+        $('.city_list').html(html).show();
+        $('.toolbar .action img').show();
+        $('.provice_list').hide();
+      }
+    })
+  }
+
+  $(function () {
+    getProviceList();
+  });
+
+  $(document).on('click', '.provice_list .item', function (e) {
+    var id = $(this).attr('data-id');
+    getCityList(id);
+  });
+
+  $(document).on('click', '.toolbar .action', function (e) {
+    $('.provice_list').show();
+    $('.city_list').html('').hide();
+    $('.toolbar .action img').hide();
+  });
+
+</script>
+</html>
