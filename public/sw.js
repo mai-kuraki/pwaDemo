@@ -6,6 +6,7 @@ let cacheList=[
   'icon.png',
   'jquery.js',
   'back.png',
+  '/favicon.ico',
   '/icon/baoyu.svg',
   '/icon/daxue.svg',
   '/icon/dayu.svg',
@@ -18,7 +19,6 @@ let cacheList=[
   '/icon/zhongxue.svg',
   '/icon/zhongyu.svg',
   '/icon/yujiaxue.svg',
-  '/favicon.ico',
   '/location.png',
   '/api/historyWeather/province',
   '/api/historyWeather/weather'
