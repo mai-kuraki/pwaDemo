@@ -17,6 +17,7 @@ let cacheList=[
   '/icon/ying.svg',
   '/icon/zhongxue.svg',
   '/icon/zhongyu.svg',
+  '/icon/yujiaxue.svg',
   '/favicon.ico',
   '/location.png',
   '/api/historyWeather/province',
