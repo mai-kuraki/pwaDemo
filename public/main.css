@@ -144,16 +144,21 @@ body{
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-top: 3vh;
 }
 .other-info .temp{
   font-size: 14px;
   color: #FFF;
+  display: flex;
+  align-items: center;
 }
 .other-info .wind{
   font-size: 14px;
   color: #FFF;
   margin-left: 21px;
+  display: flex;
+  align-items: center;
 }
 .net-tip{
   width: 100%;
