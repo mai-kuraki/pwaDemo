@@ -15,8 +15,17 @@
     <div class="title">天气查询</div>
     <div class="menu"></div>
 </div>
-<div class="provice_list"></div>
+<div class="provice_list" style="display: none"></div>
 <div class="city_list" style="display: none"></div>
+<div class="weather">
+    <div class="change-local"><img src="/location.png"></div>
+    <div class="location-info">
+        <h3></h3>
+        <p></p>
+    </div>
+    <div class="weather-info"><img src="" class="weather-icon"><span></span></div>
+    <div class="other-info"><div class="temp"></div><div class="wind"></div></div>
+</div>
 </body>
 <script>
   // 检测浏览器是否支持SW
@@ -27,6 +36,8 @@
       })
   }
 
+  var timer = null;
+
   function getProviceList() {
     $.get('/api/historyWeather/province').then(function (data, error) {
       if (data.error_code === 0) {
@@ -36,12 +47,15 @@
           html += '<div class="item" data-id="' + rec.id + '">' + rec.province + '</div>';
         });
         $('.provice_list').html(html);
+      }else if(data.error_code === 400) {
+        tip();
       }
     })
   }
 
   function getCityList(id) {
     $.get('/api/historyWeather/citys?province_id=' + id).then(function (data, error) {
+      console.log(data, error);
       if (data.error_code === 0) {
         let item = data.result || [];
         var html = '';
@@ -51,17 +65,114 @@
         $('.city_list').html(html).show();
         $('.toolbar .action img').show();
         $('.provice_list').hide();
+      }else if(data.error_code === 400) {
+        tip();
       }
     })
   }
 
+  function getWeather(id) {
+    var dayMap = ['一', '二', '三', '四', '五', '六', '日'];
+    var iconMap = {
+      '多云': 'duoyun',
+      '晴': 'qing',
+      '阴': 'ying',
+      '小雨': 'xiaoyu',
+      '大雨': 'dayu',
+      '暴雨': 'baoyu',
+      '雷雨': 'leiyu',
+      '中雨': 'zhongyu',
+      '小雪': 'xiaoxue',
+      '中雪': 'zhongxue',
+      '大雪': 'daxue'
+    };
+    var isGrey = false;
+    var date = new Date(new Date().getTime() - 24*60*60*1000);
+    $.get('/api/historyWeather/weather?city_id=' + id + '&weather_date=' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()).then(function (data, error) {
+      if (data.error_code === 0) {
+        let result = data.result || [];
+        $('.provice_list').hide();
+        $('.city_list').html('').hide();
+        $('.toolbar .action img').hide();
+        $('.weather').show();
+        $('.weather .location-info h3').text(result.city_name);
+        $('.weather .location-info p').text((date.getMonth() + 1) + '月' + date.getDate() + '日，周' + dayMap[date.getDate() - 1]);
+        $('.weather-info span').text(result.day_temp.replace('℃', '°'));
+        $('.weather-icon').attr('src', '/icon/' + (iconMap[result.day_weather] || '') + '.svg');
+        $('.other-info .temp').text(result.day_temp.replace('℃', '°') + ' / ' + result.night_temp.replace('℃', '°'));
+        $('.other-info .wind').text(result.day_wind + ' ' + result.day_wind_comp);
+        isGrey = /阴|雨|雪|雾霾/.test(result.day_weather);
+        if(isGrey) {
+          $('.weather').addClass('weather-grey');
+        }else {
+          $('.weather').removeClass('weather-grey');
+        }
+      }else if(data.error_code === 400) {
+        tip();
+      }
+    })
+  }
+
+  function isOnline() {
+    return navigator.onLine;
+  }
+
+  function checkNet() {
+    if(!isOnline()) {
+        $('body').addClass('offline');
+        $('body').append('<div class="net-tip">网络连接已断开，请检查网络</div>');
+        timer && clearTimeout(timer);
+        timer = setTimeout(function () {
+          $('.net-tip').remove();
+        }, 8000);
+    }else {
+      $('body').removeClass('offline');
+      timer && clearTimeout(timer);
+      $('.net-tip').remove();
+    }
+  }
+
+  function tip() {
+    $('.net-tip').remove();
+    $('body').append('<div class="net-tip">网络连接已断开，请检查网络</div>');
+    setTimeout(function () {
+      $('.net-tip').remove();
+    }, 5000);
+  }
+
   $(function () {
+    var store = window.localStorage;
+    var cityId = store.getItem('cityId');
+    if(cityId !== null) {
+      getWeather(cityId);
+    }else {
+      $('.weather').hide();
+      $('.provice_list').show();
+      $('.city_list').html('').hide();
+      $('.toolbar .action img').hide();
+    }
     getProviceList();
+    checkNet();
   });
+
+  window.addEventListener("online", function (e) {
+    checkNet();
+  }, false);
+
+  window.addEventListener("offline", function (e) {
+    checkNet();
+  }, false);
 
   $(document).on('click', '.provice_list .item', function (e) {
     var id = $(this).attr('data-id');
     getCityList(id);
+  });
+
+  $(document).on('click', '.city_list .item', function (e) {
+    var id = $(this).attr('data-id');
+    var store = window.localStorage;
+    store.setItem('cityId', id);
+    getWeather(id);
   });
 
   $(document).on('click', '.toolbar .action', function (e) {
@@ -69,6 +180,13 @@
     $('.city_list').html('').hide();
     $('.toolbar .action img').hide();
   });
+
+  $(document).on('click', '.change-local', function (e) {
+    $('.provice_list').show();
+    $('.city_list').html('').hide();
+    $('.toolbar .action img').hide();
+    $('.weather').hide();
+  })
 
 </script>
 </html>

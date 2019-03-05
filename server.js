@@ -1,18 +1,18 @@
-var express = require('express');
-var ejs = require('ejs');
-var request = require('request');
-var https = require('https');
-var http = require('http');
-var fs = require('fs');
+let express = require('express');
+let ejs = require('ejs');
+let request = require('request');
+let https = require('https');
+let http = require('http');
+let fs = require('fs');
 
-var options = {
+let options = {
   key: fs.readFileSync('./private.key', 'utf8'),
   cert: fs.readFileSync('./full_chain.pem', 'utf8')
 };
 
-var app = express();
-var httpsServer = https.createServer(options,app);
-var httpServer = http.createServer(app);
+let app = express();
+let httpsServer = https.createServer(options,app);
+let httpServer = http.createServer(app);
 
 app.engine('html', ejs.__express);
 app.set('views engine', 'html');
@@ -26,9 +26,9 @@ app.get('/api/*', function (req, res) {
   let url = req.url;
   if(url.indexOf('/api') === 0) {
     if(url.indexOf('?') > -1) {
-      url = url + '&key=32c01203ce89b21f9c6ca70556718ed6';
+      url = url + '&key=5c177d0e6f5b351689bd1d811aa99e94';
     }else {
-      url = url + '?key=32c01203ce89b21f9c6ca70556718ed6';
+      url = url + '?key=5c177d0e6f5b351689bd1d811aa99e94';
     }
     url = url.replace('/api', 'http://v.juhe.cn');
     request({

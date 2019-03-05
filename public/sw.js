@@ -6,7 +6,21 @@ let cacheList=[
   'icon.png',
   'jquery.js',
   'back.png',
-  '/api/historyWeather/province'
+  '/icon/baoyu.svg',
+  '/icon/daxue.svg',
+  '/icon/dayu.svg',
+  '/icon/duoyun.svg',
+  '/icon/leiyu.svg',
+  '/icon/qing.svg',
+  '/icon/xiaoxue.svg',
+  '/icon/xiaoyu.svg',
+  '/icon/ying.svg',
+  '/icon/zhongxue.svg',
+  '/icon/zhongyu.svg',
+  '/favicon.ico',
+  '/location.png',
+  '/api/historyWeather/province',
+  '/api/historyWeather/weather'
 ];
 self.addEventListener('install',e =>{
   console.log('installed');
@@ -20,7 +34,9 @@ self.addEventListener('install',e =>{
 self.addEventListener('fetch',function(e){
   if(navigator.onLine) {
     console.log('onLine')
-    return fetch(e.request.url)
+    caches.open(cacheStorageKey)
+      .then(cache => cache.add(e.request.url));
+    return fetch(e.request.url);
   }else {
     console.log('offLine')
     e.respondWith(
@@ -28,7 +44,9 @@ self.addEventListener('fetch',function(e){
         if(response != null){
           return response
         }
-        return fetch(e.request.url)
+        const resp = new Response(`{"error_code": 400}`);
+        resp.headers.set('Content-Type', 'application/json');
+        return resp;
       })
     )
   }
@@ -43,11 +61,13 @@ self.addEventListener('activate',function(e){
         cacheNames.filter(cacheNames => {
           return cacheNames !== cacheStorageKey
         }).map(cacheNames => {
+          //删除过期版本
           return caches.delete(cacheNames)
         })
       )
     }).then(() => {
-      return self.clients.claim()
+      //更新客户端上的sw
+      return self.clients.claim();
     })
   )
 });
