@@ -26,9 +26,9 @@ app.get('/api/*', function (req, res) {
   let url = req.url;
   if(url.indexOf('/api') === 0) {
     if(url.indexOf('?') > -1) {
-      url = url + '&key=5c177d0e6f5b351689bd1d811aa99e94';
+      url = url + '&key=32c01203ce89b21f9c6ca70556718ed6';
     }else {
-      url = url + '?key=5c177d0e6f5b351689bd1d811aa99e94';
+      url = url + '?key=32c01203ce89b21f9c6ca70556718ed6';
     }
     url = url.replace('/api', 'http://v.juhe.cn');
     request({
