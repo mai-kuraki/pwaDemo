@@ -32,7 +32,7 @@ self.addEventListener('install',e =>{
   )
 });
 
-self.addEventListener('fetch',function(e){
+self.addEventListener('fetch',(e) => {
   if(navigator.onLine) {
     console.log('onLine')
     caches.open(cacheStorageKey)
@@ -41,7 +41,7 @@ self.addEventListener('fetch',function(e){
   }else {
     console.log('offLine')
     e.respondWith(
-      caches.match(e.request).then(function(response){
+      caches.match(e.request).then((response) => {
         if(response != null){
           return response
         }
@@ -53,7 +53,7 @@ self.addEventListener('fetch',function(e){
   }
 });
 
-self.addEventListener('activate',function(e){
+self.addEventListener('activate',(e) => {
   e.waitUntil(
     //获取所有cache名称
     caches.keys().then(cacheNames => {
@@ -73,13 +73,13 @@ self.addEventListener('activate',function(e){
   )
 });
 
-self.addEventListener('notificationclick', event => {
-  if (!event.action) {
+self.addEventListener('notificationclick', e => {
+  if (!e.action) {
     // 没有点击在按钮上
     console.log('Notification click.');
     return;
   }
-  switch (event.action) {
+  switch (e.action) {
     case 'cancel-action':
       console.log('cancel-action click');
       break;
@@ -87,10 +87,10 @@ self.addEventListener('notificationclick', event => {
       console.log('confirm-action click');
       break;
     default:
-      console.log('Unknow action click', event.action);
+      console.log('Unknow action click', e.action);
   }
 });
 
-self.addEventListener('notificationclose', event => {
+self.addEventListener('notificationclose', e => {
   console.log('notificationclose');
 });
