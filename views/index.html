@@ -33,6 +33,34 @@
     navigator.serviceWorker.register('/sw.js')
       .then(function (registartion) {
         registartion.update();
+        new Promise((resolve, reject) => {
+          return Notification.requestPermission(result => resolve(result));
+        }).then(result => {
+          if (result === 'granted') {
+            // 有权限就直接执行，弹出通知
+            registartion.showNotification('notification', {
+              body: '这是内容', // 内容
+              icon: '/icon.png', // 图标
+              badge: '/icon.png', // 小图标，手机上展现通知缩略信息时使用
+              image: '/icon.jpg', // 给用户的预览图
+              vibrate: [100, 200, 200, 300], // 设置震动
+              requireInteraction: false, // 显示通知直到用户交互
+              actions: [
+                // 给通知增加一些按钮
+                {
+                  action: 'f-action',
+                  title: '取消',
+                },
+                {
+                  action: 's-action',
+                  title: '确认',
+                }
+              ]
+            });
+          } else {
+            console.log('no permission');
+          }
+        });
       })
   }
 

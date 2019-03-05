@@ -1,9 +1,8 @@
 {
   "name": "天气应用",
   "short_name": "天气应用",
-  "scope": "/",
   "start_url": "/home",
-  "display": "fullscreen",
+  "display": "standalone",
   "background_color": "#fff",
   "theme_color": "#166FBC",
   "icons": [
