@@ -72,3 +72,25 @@ self.addEventListener('activate',function(e){
     })
   )
 });
+
+self.addEventListener('notificationclick', event => {
+  if (!event.action) {
+    // 没有点击在按钮上
+    console.log('Notification click.');
+    return;
+  }
+  switch (event.action) {
+    case 'cancel-action':
+      console.log('cancel-action click');
+      break;
+    case 'confirm-action':
+      console.log('confirm-action click');
+      break;
+    default:
+      console.log('Unknow action click', event.action);
+  }
+});
+
+self.addEventListener('notificationclose', event => {
+  console.log('notificationclose');
+});
